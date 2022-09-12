@@ -1,0 +1,43 @@
+{
+    "name": "UnRealArt",
+    "version": "1.0.0",
+    "description": "UnRealArt",
+    "main": "index.js",
+    "repository": "https://github.com/boringcrypto/UnRealArt.git",
+    "author": "BoringCrypto <b@rtje.net>",
+    "license": "MIT",
+    "devDependencies": {
+        "@boringcrypto/hardhat-framework": "boringcrypto/hardhat-framework",
+        "concurrently": "^7.4.0",
+        "husky": "^8.0.1"
+    },
+    "scripts": {
+        "compile": "hardhat compile",
+        "test": "hardhat test",
+        "coverage": "hardhat coverage && open-cli ./coverage/index.html",
+        "prettier": "prettier --write *.js *.ts *.json test/**/*.ts contracts/**/*.sol",
+        "flat": "hardhat flat .\\contracts\\UnRealArt.sol --output .\\flat\\UnRealArtFlat.sol",
+        "dev": "hardhat compile && concurrently \"hardhat node --watch\" \"vite --config web3/vite.config.ts\"",
+        "build": "vue-tsc --noEmit && vite build --config web3/vite.config.ts",
+        "preview": "vite preview",
+        "prepare": "husky install"
+    },
+    "dependencies": {
+        "@boringcrypto/boring-solidity": "boringcrypto/BoringSolidity",
+        "@popperjs/core": "^2.11.6",
+        "axios": "^0.27.2",
+        "bootstrap": "^5.2.0",
+        "bootstrap-icons": "^1.9.1",
+        "bootstrap-vue-3": "^0.3.0",
+        "bootswatch": "^5.2.0",
+        "decimal.js-light": "^2.5.1",
+        "ipfs-http-client": "^58.0.0",
+        "ipns": "^2.0.3",
+        "js-cookie": "^3.0.1",
+        "qrcode-vue3": "^1.4.17",
+        "rand-seed": "^1.0.1",
+        "solc": "0.8.9",
+        "vue-router": "^4.1.5",
+        "vue-upload-drop-images": "^1.0.7"
+    }
+}
