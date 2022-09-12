@@ -9,7 +9,7 @@ const props = defineProps<{ series: number; image: number; gallery?: string; isL
 const serie = computed(() => app.series[props.series])
 const image_url = computed(() => "https://unrealart.infura-ipfs.io/ipfs/" + serie.value.images[props.image])
 const gallery_hash = props.gallery ? "?g=" + props.gallery : ""
-const link_url = computed(() => location.protocol + "//" + location.host + "/image/" + props.series + "/" + props.image + gallery_hash)
+const link_url = computed(() => location.protocol + "//" + location.host + "/#/image/" + props.series + "/" + props.image + gallery_hash)
 </script>
 
 <template>
