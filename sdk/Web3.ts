@@ -123,7 +123,6 @@ export default class Web3 {
 
             window.ethereum.autoRefreshOnNetworkChange = false
             const handleBlock = (blockNumber: number) => {
-                console.log(blockNumber)
                 this.block = blockNumber
             }
             const handleChainChanged = (newChainId: string) => {

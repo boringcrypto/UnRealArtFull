@@ -5,10 +5,12 @@ import BootstrapVue from "bootstrap-vue-3"
 
 import "bootswatch/dist/superhero/bootstrap.min.css"
 import "bootstrap-vue-3/dist/bootstrap-vue-3.css"
+import "bootstrap-icons/font/bootstrap-icons.css"
 
 import App from "./App.vue"
 import Home from "./pages/Home.vue"
 import ImageDetail from "./pages/ImageDetail.vue"
+import AllSeries from "./pages/AllSeries.vue"
 import Series from "./pages/Series.vue"
 import SlideShow from "./pages/SlideShow.vue"
 import Manager from "./pages/Manager.vue"
@@ -73,6 +75,7 @@ async function main() {
             routes: [
                 { path: "/", component: Home },
                 { path: "/image/:series/:image", component: ImageDetail },
+                { path: "/series/all", component: AllSeries },
                 { path: "/series/:series", component: Series },
                 { path: "/slide/:screen/:gallery", component: SlideShow },
 

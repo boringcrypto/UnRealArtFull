@@ -32,7 +32,7 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 // You need to export an object to set up your config
 // Go to https://hardhat.org/config/ to learn more
 
-const last_block = BigNumber.from(15457710)
+const last_block = BigNumber.from(15533483)
 
 const config: HardhatUserConfig = {
     solidity: {

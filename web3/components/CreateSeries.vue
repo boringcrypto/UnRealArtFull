@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { computed, inject, ref } from "vue"
 import { BigNumber } from "ethers"
-import Data from "../data-web3"
-import { UnRealArt__factory } from "../../typechain-types"
+import Data, { loadNewSeries } from "../data-web3"
+import { UnRealArtV2__factory } from "../../typechain-types"
 // @ts-ignore
 import UploadImages from "vue-upload-drop-images"
 import { useRouter } from "vue-router"
 
 const app = inject("app") as typeof Data
-const contract = UnRealArt__factory.connect("0x8d41Bd479622B68ecF5E59d68B1a2400bE465052", app.web3.provider!.getSigner())
+const contract = UnRealArtV2__factory.connect(app.contract.address, app.web3.provider!.getSigner())
 const author = ref("")
 const name = ref("")
 const description = ref("")
@@ -16,13 +16,13 @@ const process = ref("")
 const price = ref(0.1)
 const files = ref([] as any)
 const pinned = ref([] as string[])
+const router = useRouter()
 
 const addFiles = (f: any) => {
     files.value = f
 }
 
 const create = async () => {
-    console.log("huh")
     pinned.value = []
     for (let i in files.value) {
         const file = files.value[i]
@@ -39,16 +39,20 @@ const create = async () => {
             description.value.replaceAll('"', "'"),
             process.value.replaceAll('"', "'"),
             BigNumber.from(price.value * 1000000).mul("1000000000000"),
-            pinned.value
+            pinned.value,
+            app.web3.address
         )
-        console.log(tx)
+        console.log("Transaction sent")
         const receipt = await tx.wait()
-        console.log(receipt)
+        console.log("Transaction mined")
+        await loadNewSeries()
         if (receipt.status == 1) {
-            useRouter().push("/")
+            pinned.value = []
+            router.push("/series/" + (app.series.length - 1))
         }
-    } catch {
+    } catch(e) {
         pinned.value = []
+        console.log(e)
     }
 }
 </script>

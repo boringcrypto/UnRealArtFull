@@ -5,7 +5,7 @@ import Image from "../components/Image.vue"
 import Data from "../data-web3"
 
 const app = inject("app") as typeof Data
-const gallery = ref(ethers.constants.AddressZero)
+const gallery = ref("")
 const seed = Math.floor(Math.random() * 1000000)
 
 const prevImage = () => {
@@ -91,8 +91,9 @@ const nextSeries = () => {
             </p>
         </div>
 
-        <h2 class="text-center">Highlighted Series</h2>
-        <div v-for="s in [4, 1, 5, 0, 2]" class="mb-3 mx-1">
+        <h2 class="text-center">Highlighted Series <router-link to="/series/all"><small class="text-center">View All</small></router-link></h2>
+
+        <div v-for="s in [0, 1, 2, 3, 4, 5, 6]" class="mb-3 mx-1">
             <div class="row" v-if="app.series[s]">
                 <Image
                     v-for="i in app.randomListWithSeed(seed, app.series[s].images.length).slice(0, 3)"
@@ -116,7 +117,6 @@ const nextSeries = () => {
         <div class="text-center">
             <h2 class="text-center">Run a Gallery</h2>
             <p>Got a spare screen? Display AI art and get 10% commission on sales made through the QR code.</p>
-            <label>Gallery ETH address</label>
             <b-form-input
                 class="mx-auto my-3"
                 type="text"
@@ -124,11 +124,11 @@ const nextSeries = () => {
                 placeholder="Gallery ETH address"
                 style="max-width: 600px"
             ></b-form-input>
-            <router-link :to="'/slide/1/' + gallery"><b-button>One</b-button></router-link>
-            <router-link class="ms-2" :to="'/slide/2/' + gallery"><b-button>Two</b-button></router-link>
-            <router-link class="ms-2" :to="'/slide/3/' + gallery"><b-button>Three</b-button></router-link>
-            <router-link class="ms-2" :to="'/slide/4/' + gallery"><b-button>Four</b-button></router-link>
-            <router-link class="ms-2" :to="'/slide/5/' + gallery"><b-button>Five</b-button></router-link>
+            <router-link :to="'/slide/1/' + (gallery || ethers.constants.AddressZero)"><b-button>One</b-button></router-link>
+            <router-link class="ms-2" :to="'/slide/2/' + (gallery || ethers.constants.AddressZero)"><b-button>Two</b-button></router-link>
+            <router-link class="ms-2" :to="'/slide/3/' + (gallery || ethers.constants.AddressZero)"><b-button>Three</b-button></router-link>
+            <router-link class="ms-2" :to="'/slide/4/' + (gallery || ethers.constants.AddressZero)"><b-button>Four</b-button></router-link>
+            <router-link class="ms-2" :to="'/slide/5/' + (gallery || ethers.constants.AddressZero)"><b-button>Five</b-button></router-link>
         </div>
         <br />
     </div>

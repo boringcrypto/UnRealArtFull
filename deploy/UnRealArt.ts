@@ -7,7 +7,7 @@ const deployFunction: DeployFunction = async function ({ deployments, getChainId
     const chainId = parseInt(await getChainId())
     const { deployer } = await getNamedAccounts()
 
-    await deploy("UnRealArt", {
+    await deploy("UnRealArtV2", {
         from: deployer,
         args: [],
         log: true,

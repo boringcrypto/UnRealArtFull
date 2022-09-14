@@ -3,11 +3,12 @@ import { computed, inject, ref, watch } from "vue"
 import { useRoute } from "vue-router"
 import Image from "../components/Image.vue"
 import Data from "../data-web3"
-import { UnRealArt__factory } from "../../typechain-types"
-import { BigNumber } from "ethers"
+import { UnRealArtV2__factory } from "../../typechain-types"
+import { BigNumber, ethers } from "ethers"
+import Menu from "../components/Menu.vue"
 const app = inject("app") as typeof Data
 const contract = computed(() =>
-    app.web3.provider ? UnRealArt__factory.connect("0x8d41Bd479622B68ecF5E59d68B1a2400bE465052", app.web3.provider!.getSigner()) : null
+    app.web3.provider ? UnRealArtV2__factory.connect(app.contract.address, app.web3.provider!.getSigner()) : null
 )
 
 const route = useRoute()
@@ -20,19 +21,16 @@ const isOwned = ref(false)
 const load = (newParams: any) => {
     series.value = parseInt(newParams.series as string)
     image.value = parseInt(newParams.image as string)
-    console.log(serie.value, series.value, series.value >= 0)
     if (serie.value && series.value >= 0) {
-        const id = BigNumber.from(series.value).mul("1000000000000000000").add(image.value)
-        app.contract.balanceOf(serie.value.creator, id).then((balance) => {
+        const id = BigNumber.from(series.value).mul("1000000").add(image.value)
+        app.contract.balanceOf(serie.value.creator, id).then((balance: BigNumber) => {
             forSale.value = balance.eq("1")
         })
         if (app.web3.address) {
-            app.contract.balanceOf(app.web3.address, id).then((balance) => {
+            app.contract.balanceOf(app.web3.address, id).then((balance: BigNumber) => {
                 isOwned.value = balance.eq("1")
             })
         }
-
-        app.contract.uri(id).then((uri) => console.log(uri))
     }
 }
 load(route.params)
@@ -43,20 +41,21 @@ watch(
 )
 
 const buy = async () => {
-    await contract.value!.buy(series.value, image.value, "0x0000000000000000000000000000000000000000", {
+    await contract.value!.buy(series.value, image.value, app.gallery || ethers.constants.AddressZero, {
         value: serie.value.price,
     })
 }
 </script>
 
 <template>
+    <Menu></Menu>
     <div v-if="serie">
         <div class="m-3">
             <Image :series="series" :image="image" hide-q-r></Image>
         </div>
         <div style="max-width: 480px" class="ms-3 ms-lg-auto me-3">
             <div class="float-end">
-                <div v-if="app.web3.chainId == 1 && app.web3.connector">
+                <div v-if="app.web3.chainId == app.network.chainId && app.web3.connector">
                     <div v-if="app.web3.address">
                         <b-button v-if="app.web3.address != serie.creator && forSale" @click="buy">Buy</b-button>
                     </div>
@@ -74,17 +73,17 @@ const buy = async () => {
             <p>This is part of a series of {{ serie.images.length }} artworks.</p>
             <p v-if="serie.description">{{ app.series[series].description }}</p>
             <p v-if="serie.process">Process: {{ serie.process }}</p>
-            <p v-if="forSale">Price: {{ serie.price.div("1000000000000").toNumber() / 1000000 }} ETH</p>
+            <p v-if="forSale">Price: {{ BigNumber.from(serie.price).div("1000000000000").toNumber() / 1000000 }} ETH</p>
 
             <div v-if="app.web3.connected">
-                <div v-if="app.web3.chainId != 1 && app.web3.connector">
-                    To buy this artwork, please switch your wallet to the Ethereum mainnet.
+                <div v-if="app.web3.chainId != app.network.chainId && app.web3.connector">
+                    To buy this artwork, please switch your wallet to {{ app.network.chainName }}.
                 </div>
                 <div v-else-if="app.web3.address == serie.creator">You are the creator of this artwork.</div>
                 <div v-else-if="isOwned">You are the owner of this artwork.</div>
             </div>
             <div v-else>
-                To buy this artwork, please install an Ethereum wallet such as
+                To buy this artwork, please install an {{ app.network.chainName }} wallet such as
                 <a href="https://metamask.io/download/" target="_blank">MetaMask</a>
             </div>
         </div>

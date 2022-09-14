@@ -1,12 +1,12 @@
-import { markRaw, reactive, toRaw } from "vue"
+import { markRaw, reactive } from "vue"
 import Web3 from "../sdk/Web3"
-import { BigNumber } from "ethers"
-import { UnRealArt__factory } from "../typechain-types"
+import { ethers } from "ethers"
+import * as DeployedContract from "../deployments/localhost/UnRealArtV2.json"
+import { UnRealArtV2__factory } from "../typechain-types"
 import { Network } from "../sdk/Network"
 import { connectors } from "../sdk/NetworkConnectors"
 import Rand from "rand-seed"
-
-const network = new connectors[Network.ETHEREUM]()
+import Cache from "./cache.json"
 
 type Serie = {
     creator: string
@@ -14,23 +14,28 @@ type Serie = {
     name: string
     description: string
     process: string
-    price: BigNumber
+    price: string
     images: string[]
 }
 
-export default reactive({
+const network = new connectors[Network.HARDHAT]()
+const address = DeployedContract.address
+const contract = UnRealArtV2__factory.connect(address, network.provider)
+
+const app = reactive({
     title: "UnRealArt",
     name: "UnRealArt",
     web3: new Web3(),
-    contract: markRaw(UnRealArt__factory.connect("0x8d41Bd479622B68ecF5E59d68B1a2400bE465052", network.provider)),
+    network: markRaw(network),
+    contract: markRaw(contract),
 
     ipfs: null as any,
-    series: [] as Serie[],
+    series: Cache as unknown as Serie[],
 
-    serie: 0,
-    image: 0,
+    serie: 2,
+    image: 10,
 
-    gallery: "0x0000000000000000000000000000000000000000",
+    gallery: ethers.constants.AddressZero,
 
     randomList: (length: number) => {
         const list = Array.from({ length: length }, (v, k) => k)
@@ -45,3 +50,23 @@ export default reactive({
         return list
     },
 })
+
+export const loadNewSeries = async () => {
+    const seriesCount = (await contract.seriesCount()).toNumber()
+    for (let i = app.series.length; i < seriesCount; i++) {
+        console.log("Loading series " + i)
+        const res = await contract.getSerie(i)
+        app.series.push({
+            creator: res.creator,
+            author: res.author,
+            name: res.name,
+            description: res.description,
+            process: res.process,
+            price: res.price.toString(),
+            images: res.artworks,
+        })
+    }
+    //console.log(JSON.stringify(app.series))
+}
+
+export default app

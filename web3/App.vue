@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, inject, watch } from "vue"
-import Data from "./data-web3"
-import { UnRealArt__factory } from "../typechain-types"
+import Data, { loadNewSeries } from "./data-web3"
+import { UnRealArtV2__factory } from "../typechain-types"
 import { Network } from "../sdk/Network"
 import { connectors } from "../sdk/NetworkConnectors"
 import * as IPFS from "ipfs-http-client"
@@ -20,19 +20,18 @@ watch(
             Cookies.set("g", route.query.g as string)
         }
         const g = Cookies.get("g")
-        if (g) {
+        if (g && ethers.utils.isAddress(g)) {
             app.gallery = g
         }
     }
 )
 
 const g = Cookies.get("g")
-if (g) {
+if (g && ethers.utils.isAddress(g)) {
     app.gallery = g
 }
 
-const network = new connectors[Network.ETHEREUM]()
-const contract = UnRealArt__factory.connect("0x8d41Bd479622B68ecF5E59d68B1a2400bE465052", network.provider)
+const contract = UnRealArtV2__factory.connect(app.contract.address, app.network.provider)
 
 const showQueue = ref(false)
 watch(
@@ -42,7 +41,7 @@ watch(
     }
 )
 
-const loadWeb3 = async () => {
+const setup = async () => {
     const projectId = "2EM0rRSPLVa1Tz9VokxlzHYdwR6"
     const projectSecret = "88b89157de2c00f3a2e75ff31f71d0d7"
 
@@ -55,23 +54,10 @@ const loadWeb3 = async () => {
         },
     })
 
-    const seriesCount = (await contract.seriesCount()).toNumber()
-    for (let i = app.series.length; i < seriesCount; i++) {
-        console.log("Loading series " + i)
-        const res = await contract.getSerie(i)
-        app.series.push({
-            creator: res.creator,
-            author: res.author,
-            name: res.name,
-            description: res.description,
-            process: res.process,
-            price: res.price,
-            images: res.artworks,
-        })
-    }
+    await loadNewSeries()
 }
 
-loadWeb3()
+setup()
 </script>
 
 <template>

@@ -3,6 +3,7 @@ import { computed, inject, ref, watch } from "vue"
 import { useRoute } from "vue-router"
 import Image from "../components/Image.vue"
 import Data from "../data-web3"
+import Menu from "../components/Menu.vue";
 const app = inject("app") as typeof Data
 
 const route = useRoute()
@@ -20,6 +21,7 @@ watch(
 </script>
 
 <template>
+    <Menu></Menu>
     <div v-if="serie" class="m-3">
         <div style="max-width: 480px" class="mb-3">
             <strong>{{ serie.name || "Untitled" }}</strong>
@@ -30,7 +32,7 @@ watch(
             <p v-if="serie.process">Process: {{ serie.process }}</p>
         </div>
         <div>
-            <Image class="mb-3" v-for="(artwork, i) in serie.images" :series="series" :image="i" hide-q-r></Image>
+            <Image class="mb-3" v-for="(artwork, i) in serie.images" :series="series" :image="i" hide-q-r is-link></Image>
         </div>
         <br />
     </div>

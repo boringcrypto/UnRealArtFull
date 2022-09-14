@@ -15,12 +15,13 @@ const gallery = (route.params.gallery as string) || ethers.constants.AddressZero
 const time = ref(Date.now())
 const seed = computed(() => Math.floor((time.value + time_delta.value) / 30000))
 const series = computed(() => seed.value % app.series.length)
+const serie = computed(() => app.series[series.value])
 const image = computed(() =>
-    app.series.length >= series.value ? app.randomListWithSeed(seed.value, app.series[series.value].images.length)[screen.value] : 0
+    app.series.length >= series.value ? app.randomListWithSeed(seed.value, app.series[series.value].images.length)[screen.value - 1] : 0
 )
 const time_delta = ref(0)
 
-axios.get("http://worldtimeapi.org/api/timezone/Europe/Amsterdam").then((data) => {
+axios.get("https://worldtimeapi.org/api/timezone/Europe/Amsterdam").then((data) => {
     time_delta.value = data.data.unixtime * 1000 - Date.now()
 })
 
@@ -30,9 +31,21 @@ setInterval(() => {
 </script>
 
 <template>
-    <div class="h-100">
-        <Image :series="series" :image="image" :gallery="gallery" class="h-100"></Image>
+    <div class="row h-100 m-0 p-0">
+    <div class="col h-100 m-0 p-0" style="min-width: 85%; background-color: black">
+        <Image :series="series" :image="image" :gallery="gallery" class="h-100" hide-q-r></Image>
     </div>
+    <div class="col h-100">
+        <div style="position:absolute; bottom: 0">
+            <small>
+                <strong>{{ serie.name || "Untitled" }}</strong>
+                <span v-if="serie.author"
+                    ><br /><small>by {{ serie.author }}</small>
+                </span>
+            </small>            
+        </div>
+    </div>
+</div>
 </template>
 
 <style></style>
