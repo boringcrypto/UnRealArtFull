@@ -18,8 +18,8 @@ type Serie = {
     images: string[]
 }
 
-const network = new connectors[Network.HARDHAT]()
-const address = DeployedContract.address
+const network = new connectors[Network.ETHEREUM]()
+const address = "0xb46DAd35af4b45a7582B5e94128e7509cbEC4fd3" //DeployedContract.address
 const contract = UnRealArtV2__factory.connect(address, network.provider)
 
 const app = reactive({
@@ -32,8 +32,8 @@ const app = reactive({
     ipfs: null as any,
     series: Cache as unknown as Serie[],
 
-    serie: 2,
-    image: 10,
+    serie: 0,
+    image: 1,
 
     gallery: ethers.constants.AddressZero,
 

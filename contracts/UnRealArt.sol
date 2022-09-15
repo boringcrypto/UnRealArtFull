@@ -185,7 +185,7 @@ contract UnRealArtV2 is ERC1155 {
         string memory json_part1 = string(abi.encodePacked(
             '{"name":"',
             series[serie].name,
-            " ", toString(artwork),
+            " ", toString(artwork + 1),
             '","description":"',
             series[serie].description,
             '","image":"ipfs://ipfs/',

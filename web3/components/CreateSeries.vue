@@ -14,9 +14,10 @@ const name = ref("")
 const description = ref("")
 const process = ref("")
 const price = ref(0.1)
-const files = ref([] as any)
+const files = ref([] as File[])
 const pinned = ref([] as string[])
 const router = useRouter()
+const png_count = computed(() => files.value.filter((f) => f.name.endsWith(".png")).length)
 
 const addFiles = (f: any) => {
     files.value = f
@@ -95,8 +96,9 @@ const create = async () => {
             <h2>Images</h2>
             <UploadImages class="ms-0" @changed="addFiles"></UploadImages>
             <b-form-text v-if="files.length && files.length < 5" style="color: red !important">You need at least 5 artworks.</b-form-text>
+            <b-form-text v-if="png_count > 0">{{ png_count }} images are PNG. Please convert those to JPG.</b-form-text>
 
-            <b-button class="my-3 w-100" @click="create" size="lg" :disabled="!author || !name || files.length < 5">Create Series</b-button>
+            <b-button class="my-3 w-100" @click="create" size="lg" :disabled="!author || !name || files.length < 5 || png_count > 0">Create Series</b-button>
         </div>
 
         <div v-else class="row">
