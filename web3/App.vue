@@ -9,6 +9,7 @@ import { useRoute } from "vue-router"
 import { ethers } from "ethers"
 // @ts-ignore
 import Cookies from "js-cookie"
+import axios from "axios"
 
 const app = inject("app") as typeof Data
 const route = useRoute()
@@ -31,6 +32,8 @@ if (g && ethers.utils.isAddress(g)) {
     app.gallery = g
 }
 
+app.request.request_number = Cookies.get("r")
+
 const contract = UnRealArtV2__factory.connect(app.contract.address, app.network.provider)
 
 const showQueue = ref(false)
@@ -40,6 +43,14 @@ watch(
         showQueue.value = value > 0
     }
 )
+
+const updateRequest = async () => {
+    if (app.request.request_number && (!app.request.done || app.request.accepted)) {
+        const res = await axios.get(app.bot + "check/" + app.request.request_number)
+        app.request = res.data
+        console.log(app.request)
+    }
+}
 
 const setup = async () => {
     const projectId = "2EM0rRSPLVa1Tz9VokxlzHYdwR6"
@@ -55,6 +66,9 @@ const setup = async () => {
     })
 
     await loadNewSeries()
+
+    setInterval(loadNewSeries, 5 * 60 * 1000)
+    setInterval(updateRequest, 500)
 }
 
 setup()

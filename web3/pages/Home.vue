@@ -124,11 +124,11 @@ const nextSeries = () => {
                 placeholder="Gallery ETH address"
                 style="max-width: 600px"
             ></b-form-input>
-            <router-link :to="'/slide/1/' + (gallery || ethers.constants.AddressZero)"><b-button>One</b-button></router-link>
-            <router-link class="ms-2" :to="'/slide/2/' + (gallery || ethers.constants.AddressZero)"><b-button>Two</b-button></router-link>
-            <router-link class="ms-2" :to="'/slide/3/' + (gallery || ethers.constants.AddressZero)"><b-button>Three</b-button></router-link>
-            <router-link class="ms-2" :to="'/slide/4/' + (gallery || ethers.constants.AddressZero)"><b-button>Four</b-button></router-link>
-            <router-link class="ms-2" :to="'/slide/5/' + (gallery || ethers.constants.AddressZero)"><b-button>Five</b-button></router-link>
+            <router-link :to="'/slide/1/' + (gallery || 'boringcrypto.eth')"><b-button>One</b-button></router-link>
+            <router-link class="ms-2" :to="'/slide/2/' + (gallery || 'boringcrypto.eth')"><b-button>Two</b-button></router-link>
+            <router-link class="ms-2" :to="'/slide/3/' + (gallery || 'boringcrypto.eth')"><b-button>Three</b-button></router-link>
+            <router-link class="ms-2" :to="'/slide/4/' + (gallery || 'boringcrypto.eth')"><b-button>Four</b-button></router-link>
+            <router-link class="ms-2" :to="'/slide/5/' + (gallery || 'boringcrypto.eth')"><b-button>Five</b-button></router-link>
         </div>
         <br />
     </div>

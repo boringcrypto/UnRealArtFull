@@ -70,7 +70,7 @@ const create = async () => {
             </div>
 
             <div class="mb-2">
-                <h3>Name</h3>
+                <h3>Title</h3>
                 <b-form-input type="text" size="lg" v-model="name" />
                 <b-form-text>A short name for the series.</b-form-text>
             </div>

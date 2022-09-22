@@ -22,6 +22,21 @@ const network = new connectors[Network.ETHEREUM]()
 const address = "0xb46DAd35af4b45a7582B5e94128e7509cbEC4fd3" //DeployedContract.address
 const contract = UnRealArtV2__factory.connect(address, network.provider)
 
+export type Request = {
+    prev_img_src: string
+    prompt: string
+    percentage: string
+    job_id: string
+    img_src: string
+    request_number: string
+    done: boolean
+    accepted: boolean
+    published: boolean
+    author: string
+    title: string
+    description: string
+}
+
 const app = reactive({
     title: "UnRealArt",
     name: "UnRealArt",
@@ -35,7 +50,11 @@ const app = reactive({
     serie: 0,
     image: 1,
 
+    request: {} as Request,
+
     gallery: ethers.constants.AddressZero,
+
+    bot: "http://balancer-925903072.us-east-1.elb.amazonaws.com/",
 
     randomList: (length: number) => {
         const list = Array.from({ length: length }, (v, k) => k)
@@ -67,6 +86,7 @@ export const loadNewSeries = async () => {
         })
     }
     //console.log(JSON.stringify(app.series))
+    console.log(app.series.map(s => s.images.length).reduce((a, b) => a + b, 0))
 }
 
 export default app

@@ -13,6 +13,8 @@ import ImageDetail from "./pages/ImageDetail.vue"
 import AllSeries from "./pages/AllSeries.vue"
 import Series from "./pages/Series.vue"
 import SlideShow from "./pages/SlideShow.vue"
+import Interactive from "./pages/Interactive.vue"
+import MakeImage from "./pages/MakeImage.vue"
 import Manager from "./pages/Manager.vue"
 
 import Data from "./data-web3"
@@ -72,13 +74,22 @@ async function main() {
     app.use(
         createRouter({
             history: createWebHashHistory(),
+            scrollBehavior(to, from, savedPosition) {
+                if (savedPosition) {
+                    return savedPosition
+                } else {
+                    return { top: 0 }
+                }
+            },
             routes: [
                 { path: "/", component: Home },
                 { path: "/image/:series/:image", component: ImageDetail },
                 { path: "/series/all", component: AllSeries },
                 { path: "/series/:series", component: Series },
                 { path: "/slide/:screen/:gallery", component: SlideShow },
+                { path: "/interactive", component: Interactive },
 
+                { path: "/create", component: MakeImage },
                 { path: "/manager", component: Manager },
             ],
         })
