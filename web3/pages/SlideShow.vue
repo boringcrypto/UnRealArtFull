@@ -61,6 +61,13 @@ setInterval(() => {
         </transition>
     </div>
     <div class="col h-100">
+        <div style="position: absolute; top: 0" class="pt-3">
+            <h5>UnRealArt Exhibition</h5>
+            <p>
+                All works are created by Artificial Intelligence based only on simple text prompts.<br>
+            </p>
+        </div>
+
         <div style="position:absolute; bottom: 0" class="pb-3">
             <QRCodeVue3
                 class="mb-3"

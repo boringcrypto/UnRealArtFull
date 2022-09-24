@@ -7,16 +7,20 @@ import Image from "../components/Image.vue"
 import Data, { Request } from "../data-web3"
 import axios from "axios"
 import QRCodeVue3 from "qrcode-vue3"
+import BaseImage from "../components/BaseImage.vue"
 
 const app = inject("app") as typeof Data
 const work = ref(null as Request | null)
+const count = ref(0)
 
 setInterval(async () => {
     const res = await axios.get(app.bot + "show/")
-    work.value = res.data
+    work.value = res.data.image
+    count.value = res.data.count
 }, 1000)
 
-const create_url = computed(() => location.protocol + "//" + location.host + "/#/create")
+//const create_url = computed(() => location.protocol + "//" + location.host + "/#/create")
+const create_url = computed(() => "https://un-real-art.com/#/create")
 </script>
 
 <template>
@@ -39,29 +43,22 @@ const create_url = computed(() => location.protocol + "//" + location.host + "/#
         <div v-if="work" class="h-100">
             <div class="row h-100 m-0 p-0">
                 <div class="col h-100 m-0 p-0" style="min-width: 85%; background-color: black; position: relative;">
-                    <transition name="fade">
-                        <div class="h-100" style="position: relative">
-                            <img
-                                style="position: relative; height: 100%; width: 100%; object-fit: contain"
-                                :src="work.img_src"
-                                class="d-block"
-                            />
-                        </div>
-                    </transition>
+                    <Transition name="fade">
+                        <BaseImage style="position: absolute;top:0; bottom:0; left:0; right:0" :src="work.img_src" :key="work.img_src"></BaseImage>
+                    </Transition>
                 </div>
                 <div class="col h-100">
                     <div style="position: absolute; top: 0" class="pt-3">
                         <h5>UnRealArt Exhibition</h5>
                         <p>
-                            All the series seen on the other screens are original works created by Artificial Intelligence based on simple text prompts.<br>
-                            <br>
-                            No images, design or editing were involved.<br>
-                            <br>
-                            There are 258 works in 41 series created by 12 artists, rotating every 30 seconds.<br>
+                            All works are created by Artificial Intelligence based on simple text prompts.
+                        </p>
+                        <p>
+                            This screen shows {{ count }} works created by visitors.
                         </p>
                         <h5>Try it yourself!</h5>
                         <p>
-                            Scan the QR Code below to create your own AI work from a simple prompt. Once completed, the work will be shown here. The experience takes about 2 minutes.
+                            Scan the QR Code below to create your own AI work from a simple prompt. The experience takes about 2 minutes.
                         </p>
                         <QRCodeVue3
                             class="mb-3"

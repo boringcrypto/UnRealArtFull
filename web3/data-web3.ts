@@ -35,6 +35,7 @@ export type Request = {
     author: string
     title: string
     description: string
+    error: string
 }
 
 const app = reactive({
@@ -51,10 +52,12 @@ const app = reactive({
     image: 1,
 
     request: {} as Request,
+    queue: 0,
 
     gallery: ethers.constants.AddressZero,
 
-    bot: "http://balancer-925903072.us-east-1.elb.amazonaws.com/",
+    bot: "https://bot.un-real-art.com/",
+    //bot: "http://localhost:12345/",
 
     randomList: (length: number) => {
         const list = Array.from({ length: length }, (v, k) => k)
@@ -85,7 +88,7 @@ export const loadNewSeries = async () => {
             images: res.artworks,
         })
     }
-    //console.log(JSON.stringify(app.series))
+    console.log(JSON.stringify(app.series))
     console.log(app.series.map(s => s.images.length).reduce((a, b) => a + b, 0))
 }
 

@@ -47,8 +47,8 @@ watch(
 const updateRequest = async () => {
     if (app.request.request_number && (!app.request.done || app.request.accepted)) {
         const res = await axios.get(app.bot + "check/" + app.request.request_number)
-        app.request = res.data
-        console.log(app.request)
+        app.request = res.data.request
+        app.queue = res.data.queue
     }
 }
 
