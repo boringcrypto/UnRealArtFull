@@ -29,9 +29,7 @@ export type Request = {
     job_id: string
     img_src: string
     request_number: string
-    done: boolean
-    accepted: boolean
-    published: boolean
+    status: string
     author: string
     title: string
     description: string

@@ -114,7 +114,7 @@ const request_image = async () => {
 }
 
 const accept = async() => {
-    const res = await axios.get(app.bot + "upscale/" + app.request?.request_number + "/" + author.value + "/" + name.value + "/" + description.value)
+    const res = await axios.get(app.bot + "publish/" + app.request?.request_number + "/" + author.value + "/" + name.value + "/" + description.value)
     app.request = res.data
 }
 
@@ -133,81 +133,80 @@ const again = () => {
         <div style="max-width: 800px" class="mx-auto m-3">
             <div v-if="!app.request.request_number">
                 <div class="mb-2">
-                    <h3>Prompt</h3>
-                    <b-form-input type="text" size="lg" v-model="prompt" />
-                    <b-form-text>What would you like to see?</b-form-text>
-
-                    <h3 class="mt-3">Some inspiration...</h3>
+                    <h3>What would you like to see?</h3>
+                    <b-form-input type="text" size="lg" v-model="prompt" placeholder="Enter some words here" />
+                    <b-form-text>
+                        Describe what you would like to create.
+                        Or click some words below to add them.
+                    </b-form-text><br>
                     <b-button v-for="suggestion in suggestions" @click="add(suggestion)" class="m-1">{{ suggestion }}</b-button>
-
-
+                </div>
+                <div v-if="prompt">
                     <h3 class="mt-3">Style</h3>
                     <b-form-select v-model="style">
                         <b-form-select-option v-for="v, s in styles" :value="v">{{ s }}</b-form-select-option>
                     </b-form-select>
 
-                    <h3 class="mt-3">Actual Prompt</h3>
+                    <b-button class="my-3 w-100" @click="request_image" size="lg">Preview work!</b-button>
+
+                    <h5 class="mt-3">Actual prompt used with Midjourney (AI software)</h5>
                     <p>
                         {{ full_prompt }}
                     </p>
                 </div>
-
-                <b-button class="my-3 w-100" @click="request_image" size="lg">Create Artwork!</b-button>
             </div>
+
             <div v-else-if="app.request.prompt">
                 <img class="w-100" v-if="app.request.img_src" :src="app.request.img_src">
 
-                <h3>
-                    <span v-if="app.request.error">
+                <h3 class="mt-3">
+                    <span v-if="app.request.status == 'Waiting'">
+                        Starting image generation...
+                        <span v-if="app.queue">{{ app.queue }} in the queue before you.</span>
+                    </span>
+
+                    <span v-if="app.request.status == 'Painting'">
+                        Generating... {{ app.request.percentage }}% complete<br>
+                        <b-form-text>
+                            Your text prompt has been sent to MidJourney. 
+                            MidJourney is one of many Artificial Intelligence text to image generators.
+                            Other well known platforms are DALL-E 2 and Dream Studio (Stable Diffusion).
+                        </b-form-text>
+                    </span>
+
+                    <span v-if="app.request.status == 'Upscaling'">
+                        Upscaling to higher resolution, adding detail.<br>
+                        <b-form-text>
+                            The low resolution version of your image is ready, the AI is now generating a higher resolution image for the big screen.
+                        </b-form-text>
+                    </span>
+
+                    <span v-if="app.request.status == 'Published'">
+                        <b-button class="my-3 me-3" @click="again" size="lg">Start Again</b-button>
+                    </span>
+
+                    <span v-if="app.request.status == 'Error'">
                         {{ app.request.error }}<br>
                         <br>
                         <b-button class="my-3 me-3" @click="again" size="lg">Start Again</b-button>
                     </span>
-
-                    <span v-else-if="!app.request.img_src">
-                        Starting image generation...
-                    </span>
-
-                    <span v-else-if="!app.request.done">
-                        Generating... {{ app.request.percentage }}% complete
-                    </span>
-
-                    <span v-else-if="!app.request.accepted">
-                    </span>
-
-                    <span v-else-if="!app.request.published">
-                        Publishing...
-                    </span>
                 </h3>
 
-                <div v-if="!app.request.accepted">
-                    <div class="mb-2">
-                        <h3>Author</h3>
-                        <b-form-input type="text" size="lg" v-model="author" placeholder="Enter you name/handle" />
-                        <b-form-text>For twitter handles, use the @ notation (@Boring_Crypto). You can also use just a name/handle.</b-form-text>
-                    </div>
-
-                    <div class="mb-2">
-                        <h3>Title</h3>
-                        <b-form-input type="text" size="lg" v-model="name" placeholder="Enter a short title for the work" />
-                        <b-form-text>A short name for the series.</b-form-text>
-                    </div>
-
-                    <div class="mb-2">
-                        <h3>Description <small>(optional)</small></h3>
-                        <b-form-textarea size="lg" v-model="description" placeholder="Optionally enter a description" />
-                        <b-form-text>A description for the series, such as the inspiration or meaning behind it.</b-form-text>
-                    </div>
-
-                    <div v-if="app.request.done && !app.request.accepted" class="w-100">
-                        <h3>Do you like it?</h3>
-                        <b-button class="my-3 me-3" @click="reject" size="lg">Nope</b-button>
-                        <b-button class="my-3 ms-3" @click="accept" size="lg">Yes!</b-button>
-                    </div>
+                <div v-if="app.request.status == 'Finished'" class="w-100">
+                    <h3>Publish it to the big screen?</h3>
+                    <b-button class="my-3 me-3" @click="reject" size="lg">Nope</b-button>
+                    <b-button class="my-3 ms-3" @click="accept" size="lg">Yes!</b-button>
                 </div>
 
-                <div v-if="app.request.published">
-                    <b-button class="my-3 me-3" @click="again" size="lg">Start Again</b-button>
+                <div class="mb-2">
+                    <h3>Author</h3>
+                    <b-form-input type="text" size="lg" v-model="author" placeholder="Enter you name/handle" />
+                </div>
+
+                <div class="mb-2">
+                    <h3>Title</h3>
+                    <b-form-input type="text" size="lg" v-model="name" placeholder="Enter a short title for the work" />
+                    <b-form-text>A short name for the work.</b-form-text>
                 </div>
             </div>
             <div v-else>

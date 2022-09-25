@@ -45,10 +45,15 @@ watch(
 )
 
 const updateRequest = async () => {
-    if (app.request.request_number && (!app.request.done || app.request.accepted)) {
+    if (app.request && app.request.request_number && app.request.status != "Finished") {
         const res = await axios.get(app.bot + "check/" + app.request.request_number)
-        app.request = res.data.request
-        app.queue = res.data.queue
+        if (res.data.request) {
+            app.request = res.data.request
+            app.queue = res.data.queue
+        } else {
+            app.request = {}
+            app.queue = 0
+        }
     }
 }
 
