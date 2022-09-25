@@ -54,8 +54,8 @@ const app = reactive({
 
     gallery: ethers.constants.AddressZero,
 
-    //bot: "https://bot.un-real-art.com/",
-    bot: "http://localhost:12345/",
+    bot: "https://bot.un-real-art.com/",
+    //bot: "http://localhost:12345/",
 
     randomList: (length: number) => {
         const list = Array.from({ length: length }, (v, k) => k)
