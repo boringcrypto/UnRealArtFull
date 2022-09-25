@@ -25,21 +25,6 @@ const create_url = computed(() => "https://un-real-art.com/#/create")
 
 <template>
     <div>
-        <div v-if="false">
-            <h1>Create your own AI work. Scan this QR code:</h1>
-            <QRCodeVue3
-                    class="mb-3"
-                    :value="create_url"
-                    :width="150"
-                    :height="150"
-                    :backgroundOptions="{ color: '#bbb' }"
-                    :dotsOptions="{
-                        type: 'rounded',
-                        color: '#000',
-                    }"
-                />
-            <a :href="create_url" target="_blank">{{ create_url }}</a>
-        </div>
         <div v-if="work" class="h-100">
             <div class="row h-100 m-0 p-0">
                 <div class="col h-100 m-0 p-0" style="min-width: 85%; background-color: black; position: relative;">
@@ -49,28 +34,28 @@ const create_url = computed(() => "https://un-real-art.com/#/create")
                 </div>
                 <div class="col h-100">
                     <div style="position: absolute; top: 0" class="pt-3">
-                        <h5>UnRealArt Exhibition</h5>
-                        <p>
-                            All works are created by Artificial Intelligence based on simple text prompts.
-                        </p>
+                        <h3>UnRealArt Exhibition</h3>
                         <p>
                             This screen shows {{ count }} works created by visitors.
                         </p>
-                        <h5>Try it yourself!</h5>
-                        <p>
-                            Scan the QR Code below to create your own AI work from a simple prompt. The experience takes about 2 minutes.
-                        </p>
+                        <h3>Try it yourself!</h3>
+                        <h5>
+                            Scan the QR Code below to create your own AI work from a simple prompt.
+                        </h5>
                         <QRCodeVue3
-                            class="mb-3"
+                            class="mt-3 mb-2"
                             :value="create_url"
-                            :width="150"
-                            :height="150"
+                            :width="250"
+                            :height="250"
                             :backgroundOptions="{ color: '#bbb' }"
                             :dotsOptions="{
                                 type: 'rounded',
                                 color: '#000',
                             }"
                         />
+                        <p>
+                            The experience takes about 2 minutes.
+                        </p>
 
                     </div>
             

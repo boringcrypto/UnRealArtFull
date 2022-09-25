@@ -5,7 +5,6 @@ import Image from "../components/Image.vue"
 import Data from "../data-web3"
 import Menu from "../components/Menu.vue";
 import axios from "axios";
-import { title } from "process";
 import Cookies from "js-cookie"
 
 const app = inject("app") as typeof Data
@@ -14,10 +13,10 @@ const name = ref("")
 const description = ref("")
 
 const prompt = ref("")
-const style = ref("artwork --test --creative")
+const style = ref("--test --creative")
 const full_prompt = computed(() => {
     let p = prompt.value
-    var re = /[a-zA-Z'0-9 ]+/g;
+    var re = /[a-zA-Z'0-9, ]+/g;
     p = (p.match(re || []) || []).join('');
     p = p + ", " + style.value
     p = p + " --ar 3:2"
@@ -103,7 +102,7 @@ const styles = {
     "Children's Book": "children's book illustration --test",
     "Doodle": "doodle --test",
     "Octane Render": "octane render, photorealistic, 8k --testp",
-    "Other (artistic)": "artwork --test --creative",
+    "Other (artistic)": "--test --creative",
     "Other (realistic)": "photorealistic, 8k --testp",
 }
 
@@ -175,7 +174,7 @@ const again = () => {
                     </span>
 
                     <span v-if="app.request.status == 'Upscaling'">
-                        Upscaling to higher resolution, adding detail.<br>
+                        Upscaling... {{ app.request.percentage }}% complete<br>
                         <b-form-text>
                             The low resolution version of your image is ready, the AI is now generating a higher resolution image for the big screen.
                         </b-form-text>
